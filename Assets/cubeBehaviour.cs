@@ -72,7 +72,7 @@ public class cubeBehaviour : MonoBehaviour
         // TODO: Rotate velocity normal to rotation
         if (toggle)
             rb.AddForce(transform.forward * speed, ForceMode.Impulse);
-        rb.AddForceAtPosition(-transform.up * Math.Min(speed/100 * 0.1f, 0.5f), transform.position + transform.TransformDirection(rb.centerOfMass) - transform.forward * 1f, ForceMode.Impulse);
+        rb.AddForceAtPosition(-transform.up * Math.Max((speed-100)/100, 0.1f), transform.position + transform.TransformDirection(rb.centerOfMass) - transform.forward * 1f, ForceMode.Impulse);
 
         //Debug.Log(rb.velocity.magnitude);
 
@@ -81,17 +81,20 @@ public class cubeBehaviour : MonoBehaviour
         rb.AddRelativeTorque(right * pitchSpeed * Input.GetAxis("Pitch"), ForceMode.Impulse);
         rb.AddRelativeTorque(forward * rollSpeed * Input.GetAxis("Roll"), ForceMode.Impulse);
 
-        velocityLine.SetPosition(0, transform.position);
-        velocityLine.SetPosition(1, transform.position + rb.velocity);
-        COMLine.SetPosition(0, transform.position);
-        COMLine.SetPosition(1, transform.position + rb.centerOfMass - transform.up * 5);
+        //velocityLine.SetPosition(0, transform.position);
+        //velocityLine.SetPosition(1, transform.position + rb.velocity);
+        //COMLine.SetPosition(0, transform.position);
+        //COMLine.SetPosition(1, transform.position + rb.centerOfMass - transform.up * 5);
 
         //rb.velocity
         speed = Math.Min(200, Math.Max(0, speed + Input.GetAxis("Throttle")));
     }
 
-    private void OnTriggerEnter(Collider other)
+    //Detect when there is a collision starting
+    void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("Hit something");
+        //Ouput the Collision to the console
+        Debug.Log("Collision : " + collision.gameObject.name);
     }
+
 }
