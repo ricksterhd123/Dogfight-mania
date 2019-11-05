@@ -1,6 +1,6 @@
 ﻿using System;
 using UnityEngine;
-public class cubeBehaviour : MonoBehaviour
+public class FlightModel : MonoBehaviour
 {
     // Need to use forces instead of 'speeds'
     public float speed;           
@@ -55,7 +55,7 @@ public class cubeBehaviour : MonoBehaviour
         COLLine.endColor = new Color(255, 0, 0);
         COLLine.positionCount = 2;
 
-        //rb.centerOfMass = new Vector3(0, 0, 0);
+        rb.centerOfMass = new Vector3(0, 0.5f, 0);
     }
 
     // Update is called once per frame
@@ -72,13 +72,16 @@ public class cubeBehaviour : MonoBehaviour
         // TODO: Rotate velocity normal to rotation
         if (toggle)
             rb.AddForce(transform.forward * speed, ForceMode.Impulse);
-        rb.AddForceAtPosition(-transform.up * Math.Max((speed-100)/100, 0.1f), transform.position + transform.TransformDirection(rb.centerOfMass) - transform.forward * 1f, ForceMode.Impulse);
+        rb.AddForceAtPosition(-transform.up * Math.Max((speed - 100) / 100, 0.1f), transform.position + transform.TransformDirection(rb.centerOfMass) - transform.forward * 1f, ForceMode.Impulse);
 
         //Debug.Log(rb.velocity.magnitude);
 
         // Apply torque for pitch, roll and yaw
-        rb.AddRelativeTorque(up * yawSpeed * Input.GetAxis("Yaw"), ForceMode.Impulse);
-        rb.AddRelativeTorque(right * pitchSpeed * Input.GetAxis("Pitch"), ForceMode.Impulse);
+        //rb.AddRelativeTorque(up * yawSpeed * Input.GetAxis("Yaw"), ForceMode.Impulse);
+        rb.AddForceAtPosition(-transform.right * yawSpeed * Input.GetAxis("Yaw"), transform.position + transform.forward, ForceMode.Impulse);
+        //rb.AddRelativeTorque(right * pitchSpeed * Input.GetAxis("Pitch"), ForceMode.Impulse);
+        rb.AddForceAtPosition(transform.up * pitchSpeed * Input.GetAxis("Pitch"), transform.position - transform.forward * 3 + transform.right * 2);
+        rb.AddForceAtPosition(transform.up * pitchSpeed * Input.GetAxis("Pitch"), transform.position - transform.forward * 3 + transform.right * -2);
         rb.AddRelativeTorque(forward * rollSpeed * Input.GetAxis("Roll"), ForceMode.Impulse);
 
         //velocityLine.SetPosition(0, transform.position);
@@ -89,12 +92,4 @@ public class cubeBehaviour : MonoBehaviour
         //rb.velocity
         speed = Math.Min(200, Math.Max(0, speed + Input.GetAxis("Throttle")));
     }
-
-    //Detect when there is a collision starting
-    void OnCollisionEnter(Collision collision)
-    {
-        //Ouput the Collision to the console
-        Debug.Log("Collision : " + collision.gameObject.name);
-    }
-
 }
