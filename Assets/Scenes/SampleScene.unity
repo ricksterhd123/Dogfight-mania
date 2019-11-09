@@ -348,6 +348,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2300000, guid: f1b5e17f9506f774c95b73adc8d4e481, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: e21f84d720e78144296f2990ac834d1a, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f1b5e17f9506f774c95b73adc8d4e481, type: 3}
 --- !u!1 &534669902
@@ -553,8 +557,8 @@ Rigidbody:
   m_GameObject: {fileID: 843443796}
   serializedVersion: 2
   m_Mass: 10
-  m_Drag: 1
-  m_AngularDrag: 10
+  m_Drag: 0
+  m_AngularDrag: 5
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 1
@@ -586,7 +590,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 445da046ae7e0334f8f31f84378c40d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destroyedVersion: {fileID: 8391240421341427775, guid: 805855b2980e23f4ba7ff5499c256f53,
+  destroyedVersion: {fileID: 6725475562796405909, guid: 7e2167c72ad0c5341a888a74a8310864,
     type: 3}
 --- !u!114 &843443803
 MonoBehaviour:
@@ -600,11 +604,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1809aa947297c904fa52a785b2ecc892, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 100
+  speed: 200
   rollSpeed: 40
   pitchSpeed: 40
-  yawSpeed: 12.5
+  yawSpeed: 1
   lift: 0
+  XDrag: 1
+  YDrag: 0.1
+  ZDrag: 0.01
+  maxSpeed: 500
 --- !u!1 &966963702 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100002, guid: e31c50ba87cd3194e9019d749a80cfe7,
@@ -731,7 +739,7 @@ PrefabInstance:
     - target: {fileID: 2300000, guid: ae19e1150d20ef5489a1346f5a9ac1ac, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: e21f84d720e78144296f2990ac834d1a, type: 2}
+      objectReference: {fileID: 2100000, guid: 54ce4aaa1e3eebc40b9445067a5acc76, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ae19e1150d20ef5489a1346f5a9ac1ac, type: 3}
 --- !u!1001 &1999669893

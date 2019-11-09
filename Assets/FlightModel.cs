@@ -8,88 +8,58 @@ public class FlightModel : MonoBehaviour
     public float pitchSpeed;
     public float yawSpeed;
     public float lift;
-
-    // Local axis vectors
-    private Vector3 up = new Vector3(0, 1, 0);
-    private Vector3 forward = new Vector3(0, 0, 1);
-    private Vector3 right = new Vector3(1, 0, 0);
-
+    public float XDrag, YDrag, ZDrag;        // Medium, high, and low, respectively
+    public float maxSpeed;
     private Rigidbody rb;
-    private bool toggle = true;
-
-    // Line drawing for debug purposes
-    private GameObject velocityLineObject;
-    private LineRenderer velocityLine;
-    // Center of mass
-    private GameObject COMLineObject;
-    private LineRenderer COMLine;
-    // Center of lift
-    private GameObject COLLineObject;
-    private LineRenderer COLLine;
+    private bool engineOn = true;
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        //rb.centerOfMass = new Vector3(0, 0, 8);
-        velocityLineObject = new GameObject("Line");
-        velocityLine = velocityLineObject.AddComponent<LineRenderer>();
-        velocityLine.startWidth = 1;
-        velocityLine.endWidth = 1;
-        velocityLine.startColor = new Color(255, 0, 0);
-        velocityLine.endColor = new Color(0, 255, 0);
-        velocityLine.positionCount = 2;
-
-        COMLineObject = new GameObject("Line");
-        COMLine = COMLineObject.AddComponent<LineRenderer>();
-        COMLine.startWidth = 1;
-        COMLine.endWidth = 1;
-        COMLine.startColor = new Color(0, 255, 0);
-        COMLine.endColor = new Color(0, 255, 0);
-        COMLine.positionCount = 2;
-
-        COLLineObject = new GameObject("Line");
-        COLLine = COLLineObject.AddComponent<LineRenderer>();
-        COLLine.startWidth = 1;
-        COLLine.endWidth = 1;
-        COLLine.startColor = new Color(255, 0, 0);
-        COLLine.endColor = new Color(255, 0, 0);
-        COLLine.positionCount = 2;
-
-        rb.centerOfMass = new Vector3(0, 0.5f, 0);
+        rb.centerOfMass = new Vector3(0, 2f, 0);
     }
 
     // Update is called once per frame
     // TODO: Make flight model more realistic
     void Update()
     {
-        //Debug.Log(rb.centerOfMass);
+
         // Shut off engines
         if (Input.GetKeyDown("o"))
         {
-            toggle = !toggle;
+            engineOn = false;
+        }
+        if (Input.GetKeyDown("i"))
+        {
+            engineOn = true;
         }
 
-        // TODO: Rotate velocity normal to rotation
-        if (toggle)
+        // Engine throttle
+        if (engineOn)
             rb.AddForce(transform.forward * speed, ForceMode.Impulse);
-        rb.AddForceAtPosition(-transform.up * Math.Max((speed - 100) / 100, 0.1f), transform.position + transform.TransformDirection(rb.centerOfMass) - transform.forward * 1f, ForceMode.Impulse);
-
-        //Debug.Log(rb.velocity.magnitude);
-
-        // Apply torque for pitch, roll and yaw
-        //rb.AddRelativeTorque(up * yawSpeed * Input.GetAxis("Yaw"), ForceMode.Impulse);
-        rb.AddForceAtPosition(-transform.right * yawSpeed * Input.GetAxis("Yaw"), transform.position + transform.forward, ForceMode.Impulse);
-        //rb.AddRelativeTorque(right * pitchSpeed * Input.GetAxis("Pitch"), ForceMode.Impulse);
+        speed = Math.Min(maxSpeed, Math.Max(0, speed + Input.GetAxis("Throttle")));
+        // Yaw
+        rb.AddForceAtPosition(-transform.right * yawSpeed * Input.GetAxis("Yaw"), transform.position - transform.forward * 0.5f, ForceMode.Impulse);
+        // Pitch
         rb.AddForceAtPosition(transform.up * pitchSpeed * Input.GetAxis("Pitch"), transform.position - transform.forward * 3 + transform.right * 2);
         rb.AddForceAtPosition(transform.up * pitchSpeed * Input.GetAxis("Pitch"), transform.position - transform.forward * 3 + transform.right * -2);
-        rb.AddRelativeTorque(forward * rollSpeed * Input.GetAxis("Roll"), ForceMode.Impulse);
+        // Roll
+        rb.AddRelativeTorque(Vector3.forward * rollSpeed * Input.GetAxis("Roll"), ForceMode.Impulse);
+        // Aerodynamic lift
+        rb.AddForceAtPosition(-transform.up * Math.Max((speed - maxSpeed) / maxSpeed, 0), transform.TransformPoint(rb.centerOfMass) - transform.forward * 1f, ForceMode.Impulse);
+        // Aerodynamic drag - by Pyrian#7263 on the official unity discord at #physics
+        // Separate drag values for each axis
+        // Divvy the velocity up by axis
+        Vector3 rightVelocity = Vector3.Project(rb.velocity, transform.right);
+        Vector3 upVelocity = Vector3.Project(rb.velocity, transform.up);
+        Vector3 forwardVelocity = Vector3.Project(rb.velocity, transform.forward);
 
-        //velocityLine.SetPosition(0, transform.position);
-        //velocityLine.SetPosition(1, transform.position + rb.velocity);
-        //COMLine.SetPosition(0, transform.position);
-        //COMLine.SetPosition(1, transform.position + rb.centerOfMass - transform.up * 5);
+        // Add up the drag on each axis. Drag is proportional to the square magnitude of the velocity.
+        Vector3 drag = rightVelocity.magnitude * rightVelocity * XDrag;
+        drag += upVelocity.magnitude * upVelocity * YDrag;
+        drag += forwardVelocity.magnitude * forwardVelocity * ZDrag;
 
-        //rb.velocity
-        speed = Math.Min(200, Math.Max(0, speed + Input.GetAxis("Throttle")));
+        // Apply (drag opposes velocity, so minus)
+        rb.AddForce(-drag);
     }
 }

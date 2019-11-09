@@ -6,8 +6,9 @@ public class ThirdPersonCamera : MonoBehaviour
 {
     public GameObject attached;
     private Rigidbody rb;
-    private Vector3 worldUp = new Vector3(0, 1, 0);
-
+    private Vector3 cameraFacingDirection = -Vector3.forward;
+    private int cameraDistance = 20;    // units
+    private int cameraHeight = 5;       // units
     private void Start()
     {
         rb = attached.GetComponent<Rigidbody>();
@@ -17,8 +18,10 @@ public class ThirdPersonCamera : MonoBehaviour
     {
         if (attached != null)
         {
-            transform.position = rb.transform.position - (rb.transform.forward * 20) + (worldUp * 5);
+            transform.position = rb.transform.position - rb.transform.forward * cameraDistance + Vector3.up * cameraHeight;
             transform.LookAt(rb.transform);
+            transform.RotateAround(rb.transform.position, Vector3.right, 90 * Input.GetAxis("Mouse Y"));
+            transform.RotateAround(rb.transform.position, Vector3.up, 90 * Input.GetAxis("Mouse X"));
         }
     }
 }
