@@ -10,8 +10,8 @@ This repository uses LFS to store .obj files, so please install git LFS and clon
 git lfs clone <repo>
 
 ### TODO
-- [ ] Improve flight model with/without physics
-- [ ] Death on ground collision
+- [/] Improve flight model with/without physics
+- [/] Death on ground collision
 - [ ] Create missile /w physics or simple transform
 	- [ ] Implement seek and steer behaviour
 	- [ ] Implement proportional navigation behaviour
