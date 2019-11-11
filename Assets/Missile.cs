@@ -17,7 +17,7 @@ public class Missile
     {
         this.missileObject = missileObject;
         this.timeStart = Time.time;
-        this.MaxSpeed = 10;    // units/sec
+        this.MaxSpeed = 24;    // units/sec
         this.MaxLifeTime = 30;  // 30 seconds by default.
     }
 
@@ -26,7 +26,7 @@ public class Missile
         this.missileObject = missileObject;
         this.targetObject = targetObject;
         this.timeStart = Time.time;
-        this.MaxSpeed = 10;
+        this.MaxSpeed = 24;
         this.MaxLifeTime = 30;
     }
 
@@ -50,6 +50,7 @@ public class Missile
 
     public void Update()
     {
+
         // todo: use later
         //float elapsedTime = Time.time - this.timeStart;
         //float progress = 1 - ((this.MaxLifeTime - elapsedTime) / this.MaxLifeTime);
@@ -63,11 +64,13 @@ public class Missile
         if (this.targetObject)
         {
             // Move towards the target.
-            newForward = ((this.targetObject.transform.position - this.missileObject.transform.position) * this.MaxSpeed) - (this.missileObject.transform.forward * this.MaxSpeed);
+            newForward = (((this.targetObject.transform.position + new Vector3(Random.Range(0, 5), Random.Range(0, 5), Random.Range(0, 5))) - this.missileObject.transform.position)) - (this.missileObject.transform.forward);
+            newForward *= this.MaxSpeed;
         }
         
         // Update position and rotation
         missileObject.transform.position += newForward * Time.deltaTime;
-        missileObject.transform.rotation.SetLookRotation(-newForward, missileObject.transform.up);
+        if (this.targetObject)
+            missileObject.transform.LookAt(this.targetObject.transform);
     }
 }
