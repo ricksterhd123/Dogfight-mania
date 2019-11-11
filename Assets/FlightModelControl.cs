@@ -1,8 +1,13 @@
-﻿using System;
+﻿/**
+ * Controls the plane with Input.GetAxis
+ */
+using System;
 using UnityEngine;
-public class FlightModel : MonoBehaviour
+
+public class FlightModelControl : MonoBehaviour
 {
-    // Need to use forces instead of 'speeds'
+    // Public
+    // todo: better naming, use 'forces' instead of 'speeds' or something else more appropriate
     public float speed;           
     public float rollSpeed;         // Angular
     public float pitchSpeed;
@@ -10,20 +15,20 @@ public class FlightModel : MonoBehaviour
     public float lift;
     public float XDrag, YDrag, ZDrag;        // Medium, high, and low, respectively
     public float maxSpeed;
+
+    // Private
     private Rigidbody rb;
     private bool engineOn = true;
-    // Start is called before the first frame update
+ 
     void Start()
     {
+        // Set the center of mass a little forward so that the center of lift is slightly behind
         rb = GetComponent<Rigidbody>();
         rb.centerOfMass = new Vector3(0, 2f, 0);
     }
 
-    // Update is called once per frame
-    // TODO: Make flight model more realistic
     void Update()
     {
-
         // Shut off engines
         if (Input.GetKeyDown("o"))
         {
@@ -38,15 +43,20 @@ public class FlightModel : MonoBehaviour
         if (engineOn)
             rb.AddForce(transform.forward * speed, ForceMode.Impulse);
         speed = Math.Min(maxSpeed, Math.Max(0, speed + Input.GetAxis("Throttle")));
+        
         // Yaw
         rb.AddForceAtPosition(-transform.right * yawSpeed * Input.GetAxis("Yaw"), transform.position - transform.forward * 0.5f, ForceMode.Impulse);
+        
         // Pitch
         rb.AddForceAtPosition(transform.up * pitchSpeed * Input.GetAxis("Pitch"), transform.position - transform.forward * 3 + transform.right * 2);
         rb.AddForceAtPosition(transform.up * pitchSpeed * Input.GetAxis("Pitch"), transform.position - transform.forward * 3 + transform.right * -2);
+        
         // Roll
         rb.AddRelativeTorque(Vector3.forward * rollSpeed * Input.GetAxis("Roll"), ForceMode.Impulse);
+        
         // Aerodynamic lift
         rb.AddForceAtPosition(-transform.up * Math.Max((speed - maxSpeed) / maxSpeed, 0), transform.TransformPoint(rb.centerOfMass) - transform.forward * 1f, ForceMode.Impulse);
+        
         // Aerodynamic drag - by Pyrian#7263 on the official unity discord at #physics
         // Separate drag values for each axis
         // Divvy the velocity up by axis

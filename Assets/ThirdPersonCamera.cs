@@ -20,8 +20,8 @@ public class ThirdPersonCamera : MonoBehaviour
         {
             transform.position = rb.transform.position - rb.transform.forward * cameraDistance + Vector3.up * cameraHeight;
             transform.LookAt(rb.transform);
-            transform.RotateAround(rb.transform.position, Vector3.right, 90 * Input.GetAxis("Mouse Y"));
-            transform.RotateAround(rb.transform.position, Vector3.up, 90 * Input.GetAxis("Mouse X"));
+            transform.RotateAround(rb.transform.position, Vector3.right, 360 * Input.GetAxis("Mouse Y"));
+            transform.RotateAround(rb.transform.position, Vector3.up, 360 * Input.GetAxis("Mouse X"));
         }
     }
 }

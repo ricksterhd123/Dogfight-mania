@@ -1,31 +1,36 @@
-﻿using System;
+﻿/**
+ *  Invoke gameOver when the user has crashed and display a broken aircraft.
+ */
+using System;
 using UnityEngine;
 public class PlaneDestruct : MonoBehaviour
 {
     public GameObject destroyedVersion;
     private bool collided = false;
-    private game g;
+    private Game g;
+
     public void Start()
     {
-        g = FindObjectOfType<game>();
+        g = FindObjectOfType<Game>();
     }
+
     public void Update()
     {
+        // Replace the current plane with a broken one and let the physics do the work...
         if (collided)
         {
             Instantiate(destroyedVersion, gameObject.transform.position, gameObject.transform.rotation);
             GameObject.Destroy(gameObject);
             collided = false;
 
-            // Game over...
+            // Invoke game over...
             g.gameOver();
         }
     }
 
+    // For now, any collision is regarded as a crash
     void OnCollisionEnter(Collision collision)
     {
-        //Output the Collider's GameObject's name
-        Debug.Log(collision.collider.name);
         collided = true;
     }
 }
