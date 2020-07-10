@@ -11,11 +11,12 @@ public class Game : MonoBehaviour
     private float timeSinceGameOver = 0;    // todo: better name
 
     void Update()
-    { 
+    {
+        float timeElapsed = Time.time - timeSinceGameOver; 
         // Quit the game x seconds after the method 'gameOver' has been called.
-        if (isGameOver && (Time.time - timeSinceGameOver) > maxTimeBeforeQuit)
+        if (isGameOver && timeElapsed >= maxTimeBeforeQuit)
         {
-            Debug.Log("Quitting...");
+            Debug.Log(timeElapsed);
             Application.Quit();
         }
     }

@@ -23,8 +23,10 @@ public class PlaneDestruct : MonoBehaviour
             GameObject.Destroy(gameObject);
             collided = false;
 
+            // TODO: back to main menu
             // Invoke game over...
             g.gameOver();
+            Debug.Log("Did game over");
         }
     }
 
