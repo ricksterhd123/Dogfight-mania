@@ -42,6 +42,7 @@ public class FlightModelControl : MonoBehaviour
         // Engine throttle
         if (engineOn)
             rb.AddForce(transform.forward * speed, ForceMode.Impulse);
+        
         speed = Math.Min(maxSpeed, Math.Max(0, speed + Input.GetAxis("Throttle")));
         
         // Yaw
@@ -55,7 +56,7 @@ public class FlightModelControl : MonoBehaviour
         rb.AddRelativeTorque(Vector3.forward * rollSpeed * Input.GetAxis("Roll"), ForceMode.Impulse);
         
         // Aerodynamic lift
-        rb.AddForceAtPosition(-transform.up * Math.Max((speed - maxSpeed) / maxSpeed, 0), transform.TransformPoint(rb.centerOfMass) - transform.forward * 1f, ForceMode.Impulse);
+        //rb.AddForceAtPosition(-transform.up * speed/100, transform.TransformPoint(rb.centerOfMass) - transform.forward * 1f, ForceMode.Impulse);
         
         // Aerodynamic drag - by Pyrian#7263 on the official unity discord at #physics
         // Separate drag values for each axis

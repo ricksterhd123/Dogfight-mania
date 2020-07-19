@@ -7,8 +7,8 @@ public class ThirdPersonCamera : MonoBehaviour
     public GameObject attached;
     private Rigidbody rb;
     private Vector3 cameraFacingDirection = -Vector3.forward;
-    private int cameraDistance = 20;    // units
-    private int cameraHeight = 5;       // units
+    private int cameraDistance = 50;    // units
+    private float cameraHeight = 0.5f;       // units
     private void Start()
     {
         rb = attached.GetComponent<Rigidbody>();
